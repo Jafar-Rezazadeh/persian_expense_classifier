@@ -1,0 +1,13 @@
+name: persian_classifier
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.10.18
+  - numpy
+  - pandas
+  - scikit-learn
+  - tensorflow
+  - keras
+  - matplotlib

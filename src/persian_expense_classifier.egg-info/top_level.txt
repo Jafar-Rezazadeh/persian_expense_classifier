@@ -1,0 +1,1 @@
+persian_expense_classifier
