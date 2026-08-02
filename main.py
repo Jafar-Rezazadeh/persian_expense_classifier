@@ -10,7 +10,9 @@ from persian_expense_classifier.preprocessing.tokenizer_and_padder import (
 from persian_expense_classifier.preprocessing.custom_label_encoder import (
     CustomLabelEncoder,
 )
-from persian_expense_classifier.models.custom_model import ExpanseClassifier
+from persian_expense_classifier.models.simple_expense_classifier_model import (
+    SimpleExpanseClassifierModel,
+)
 
 maxLen = 20
 num_words = 1000
@@ -71,7 +73,9 @@ yTestEnc = customLabelEncoder.transform(yTest)
 
 num_classes = len(customLabelEncoder.classes_)
 
-model = ExpanseClassifier(num_words=num_words, maxLen=maxLen, num_classes=num_classes)
+model = SimpleExpanseClassifierModel(
+    num_words=num_words, maxLen=maxLen, num_classes=num_classes
+)
 
 model.fit(
     xTrainPad,

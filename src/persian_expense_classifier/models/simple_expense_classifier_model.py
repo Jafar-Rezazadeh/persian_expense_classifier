@@ -4,7 +4,7 @@ from keras.losses import SparseCategoricalCrossentropy
 import tensorflow as tf
 
 
-class ExpanseClassifier:
+class SimpleExpanseClassifierModel:
     def __init__(self, num_words, maxLen, num_classes):
 
         model = Sequential(
@@ -51,6 +51,6 @@ class ExpanseClassifier:
 
         tflite_model = converter.convert()
 
-        with open("build/expense_classifier_model.tflite", "wb") as f:
+        with open("build/simple_expense_classifier_model.tflite", "wb") as f:
             f.write(tflite_model)
             f.close()
