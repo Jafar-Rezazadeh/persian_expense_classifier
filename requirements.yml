@@ -12,3 +12,4 @@ dependencies:
   - keras
   - matplotlib
   - pytest
+  - pytest-mock

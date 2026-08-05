@@ -1,4 +1,3 @@
-# %% imports
 import tensorflow as tf
 from keras.layers import (
     TextVectorization,
@@ -8,3 +7,5 @@ from keras.layers import (
     Dense,
     Input,
 )
+
+# TODO: Implement CNN model
