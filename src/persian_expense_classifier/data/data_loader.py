@@ -9,7 +9,6 @@ import random
 
 def loadData() -> tuple[np.ndarray, np.ndarray]:
 
-    # TODO: ⬇️ learn what this python code does about path (ROOT and /)
     ROOT = Path(__file__).resolve().parents[3]
 
     df1 = pd.read_csv(ROOT / "data/raw/expense_dataset_5000.csv")
@@ -30,16 +29,10 @@ def loadData() -> tuple[np.ndarray, np.ndarray]:
 
     df = pd.concat([df1, df2, df3, df4], ignore_index=True)
 
-    # print(df.describe(include="all"))
-
     x = df.drop(columns=["id", "label"])
     y = df["label"]
 
     x = x.astype(str).values.flatten()
     y = y.astype(str).values.flatten()
-
-    # randIndex = random.randint(0, len(x))
-
-    # print(x.shape, y.shape, x[randIndex], y[randIndex])
 
     return x, y
