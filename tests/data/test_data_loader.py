@@ -6,12 +6,18 @@ from persian_expense_classifier.data.data_loader import loadData
 import pandas as pd
 
 
-def test_loading_data_correct_file(mock_read_csv: MockType, fake_df: pd.DataFrame):
+def test_load_expected_csv_files(mock_read_csv: MockType, fake_df: pd.DataFrame):
     # act
     loadData()
 
     # assert
-    mock_read_csv.assert_called()
+    paths = [call.args[0] for call in mock_read_csv.call_args_list]
+
+    assert Path(r"data/raw/expense_dataset_5000.csv").resolve() in paths
+    assert Path(r"data/raw/expense_dataset_10000_20words.csv").resolve() in paths
+    assert Path(r"data/raw/expense_dataset_10000.csv").resolve() in paths
+    assert Path(r"data/raw/expenses_1000_food_included_of_5000.csv").resolve() in paths
+    assert Path(r"data/raw/expenses_dataset_50000.csv").resolve() in paths
 
 
 def test_should_convert_int_label_to_string(mocker: MockerFixture):
@@ -36,17 +42,18 @@ def test_should_concat_all_loaded_dfs(mocker: MockerFixture):
     df2 = pd.DataFrame({"id": [1], "label": [6], "text": ["df2"]})
     df3 = pd.DataFrame({"id": [2], "label": [3], "text": ["df3"]})
     df4 = pd.DataFrame({"id": [3], "label": [2], "text": ["df4"]})
+    df5 = pd.DataFrame({"id": [4], "label": [5], "text": ["df5"]})
 
     mocker.patch(
         "persian_expense_classifier.data.data_loader.pd.read_csv",
-        side_effect=[df1, df2, df3, df4],
+        side_effect=[df1, df2, df3, df4, df5],
     )
 
     # act
     X, y = loadData()
 
     # assert
-    expected_dfs_text = ["df1", "df2", "df3", "df4"]
+    expected_dfs_text = ["df1", "df2", "df3", "df4", "df5"]
     assert X.tolist() == expected_dfs_text
 
 
