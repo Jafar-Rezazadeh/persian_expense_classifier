@@ -1,7 +1,7 @@
 from tensorflow import Tensor, strings
 
 
-def inputStandardize(text) -> Tensor:
+def input_standardize(text) -> Tensor:
 
     text = strings.lower(text)
 
@@ -18,3 +18,8 @@ def inputStandardize(text) -> Tensor:
     text = strings.regex_replace(text, r"\s+", " ")
 
     return text
+
+
+STANDARDIZERS = {
+    "expense_standardize": input_standardize,
+}
