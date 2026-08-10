@@ -16,6 +16,15 @@ class TestTextVectorizationLayer:
         # assert
         assert isinstance(result, tf.keras.layers.Layer)
 
+    def test_load_config_from_expected_file(self, mocker: MockerFixture):
+        # arrange
+        # TODO: test the expected load config called
+
+        # act
+
+        # assert
+        pass
+
     def test_has_expected_parameters(self, mocker: MockerFixture):
 
         # act
