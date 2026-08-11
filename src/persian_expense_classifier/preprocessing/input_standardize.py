@@ -1,7 +1,9 @@
+from collections.abc import Callable
+
 from tensorflow import Tensor, strings
 
 
-def input_standardize(text) -> Tensor:
+def input_standardize(text: Tensor) -> Tensor:
 
     text = strings.lower(text)
 
