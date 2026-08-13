@@ -15,12 +15,11 @@ from keras.layers import (
 
 class CnnExpenseClassifierModel:
     def __init__(self):
-        return
+        self.train_config = load_train_config()
 
     def vectorizer(self) -> TextVectorization:
 
-        config = load_train_config()
-        vectorizer_config = config["text_vectorization"]
+        vectorizer_config = self.train_config["text_vectorization"]
 
         standardizer = STANDARDIZERS[vectorizer_config["standardize"]]
 
@@ -35,21 +34,34 @@ class CnnExpenseClassifierModel:
         self, text_vectorizer: keras_layers.TextVectorization
     ) -> tf.keras.Model:
 
-        # TODO: get the hyperParameters from configs
+        cnn_conf = self.train_config["cnn_model"]
+
         input = keras_layers.Input(shape=(1,), dtype=tf.string)
+
         x = text_vectorizer(input)
+
         x = keras_layers.Embedding(
-            input_dim=text_vectorizer.vocabulary_size(), output_dim=128
+            input_dim=text_vectorizer.vocabulary_size(),
+            output_dim=cnn_conf["embedding"]["output_dim"],
         )(x)
 
         x = keras_layers.Conv1D(
-            filters=64, kernel_size=4, padding="same", activation="relu"
+            filters=cnn_conf["conv1D"]["filters"],
+            kernel_size=cnn_conf["conv1D"]["kernel_size"],
+            padding=cnn_conf["conv1D"]["padding"],
+            activation=cnn_conf["conv1D"]["activation"],
         )(x)
 
         x = keras_layers.GlobalAveragePooling1D()(x)
 
-        x = keras_layers.Dense(64, activation="relu")(x)
+        x = keras_layers.Dense(
+            cnn_conf["dense1"]["units"],
+            activation=cnn_conf["dense1"]["activation"],
+        )(x)
 
-        x = keras_layers.Dense(6, activation="softmax")(x)
+        x = keras_layers.Dense(
+            cnn_conf["dense2"]["units"],
+            activation=cnn_conf["dense2"]["activation"],
+        )(x)
 
         return tf.keras.Model(input, x)

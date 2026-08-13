@@ -1,3 +1,4 @@
+from typing import cast
 from unittest.mock import MagicMock
 
 import keras.layers as keras_layers
@@ -12,15 +13,16 @@ from persian_expense_classifier.models.cnn_expense_classifier_model import (
 )
 
 
-class TestTextVectorizationLayer:
+@pytest.fixture(autouse=True)
+def mock_load_train_config(mocker: MockerFixture):
+    fake_config = fake_test_data.train_config_dic
+    return mocker.patch(
+        "persian_expense_classifier.models.cnn_expense_classifier_model.load_train_config",
+        return_value=fake_config,
+    )
 
-    @pytest.fixture(autouse=True)
-    def mock_load_train_config(self, mocker: MockerFixture):
-        fake_config = fake_test_data.fake_train_config_dic
-        return mocker.patch(
-            "persian_expense_classifier.models.cnn_expense_classifier_model.load_train_config",
-            return_value=fake_config,
-        )
+
+class TestTextVectorizationLayer:
 
     def test_should_return_expected_layer_type(
         self, mocker: MockerFixture, mock_load_train_config: MagicMock
@@ -42,7 +44,7 @@ class TestTextVectorizationLayer:
         mock_load_train_config.assert_called_once()
 
     def test_has_expected_parameters_based_on_train_config(self, mocker: MockerFixture):
-        fake_config = fake_test_data.fake_train_config_dic
+        fake_config = fake_test_data.train_config_dic
 
         mocker.patch(
             "persian_expense_classifier.models.cnn_expense_classifier_model.load_train_config",
@@ -106,3 +108,58 @@ class TestCreateModel:
             keras_layers.Dense,
             keras_layers.Dense,
         ]
+
+    def test_should_each_layer_has_expected_hyper_params_based_on_train_config(
+        self, fake_vectorizer, mocker: MockerFixture
+    ):
+        # arrange
+        fake_config = fake_test_data.train_config_dic
+        mocker.patch(
+            "persian_expense_classifier.models.cnn_expense_classifier_model.load_train_config",
+            return_value=fake_config,
+        )
+
+        # act
+        model = CnnExpenseClassifierModel().create_model(fake_vectorizer)
+
+        # assert
+        cnn_conf = fake_config["cnn_model"]
+
+        embedding = next(
+            x for x in model.layers if isinstance(x, keras_layers.Embedding)
+        )
+        embedding_conf = embedding.get_config()
+        assert embedding_conf["output_dim"] == cnn_conf["embedding"]["output_dim"]
+        assert embedding_conf["input_dim"] == fake_vectorizer.vocabulary_size()
+
+        # conv1d
+        conv = next(x for x in model.layers if isinstance(x, keras_layers.Conv1D))
+        conv_conf = conv.get_config()
+        conv_expected = cnn_conf["conv1D"]
+        assert conv_conf["filters"] == conv_expected["filters"]
+        assert conv_conf["kernel_size"] == conv_expected["kernel_size"]
+        assert conv_conf["padding"] == conv_expected["padding"]
+        assert conv_conf["activation"] == conv_expected["activation"]
+
+        # dense layers
+        # first dense
+        dense1 = next(
+            x
+            for x in model.layers
+            if isinstance(x, keras_layers.Dense)
+            and x.get_config()["units"] == cnn_conf["dense1"]["units"]
+        )
+        dense1_conf = dense1.get_config()
+        assert dense1_conf["units"] == cnn_conf["dense1"]["units"]
+        assert dense1_conf["activation"] == cnn_conf["dense1"]["activation"]
+
+        # final dense
+        dense2 = next(
+            x
+            for x in model.layers
+            if isinstance(x, keras_layers.Dense)
+            and x.get_config()["units"] == cnn_conf["dense2"]["units"]
+        )
+        dense2_conf = dense2.get_config()
+        assert dense2_conf["units"] == cnn_conf["dense2"]["units"]
+        assert dense2_conf["activation"] == cnn_conf["dense2"]["activation"]

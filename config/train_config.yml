@@ -3,3 +3,18 @@ text_vectorization:
   output_sequence_length: 20
   output_mode: int
   standardize: expense_standardize
+
+cnn_model:
+  embedding:
+    output_dim: 128
+  conv1D:
+    filters: 64
+    kernel_size: 4
+    padding: same
+    activation: relu
+  dense1:
+    units: 64
+    activation: relu
+  dense2:
+    units: 6 #number of classes
+    activation: softmax
