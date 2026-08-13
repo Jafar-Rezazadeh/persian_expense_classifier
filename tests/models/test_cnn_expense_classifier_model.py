@@ -1,4 +1,6 @@
 from unittest.mock import MagicMock
+
+import keras.layers as keras_layers
 from persian_expense_classifier.preprocessing.input_standardize import STANDARDIZERS
 import pytest
 from pytest_mock import MockerFixture
@@ -60,3 +62,47 @@ class TestTextVectorizationLayer:
         )
         assert vectorizer._output_mode == vectorizer_conf["output_mode"]
         assert vectorizer._standardize == STANDARDIZERS[vectorizer_conf["standardize"]]
+
+
+class TestCreateModel:
+
+    @pytest.fixture(autouse=True)
+    def fake_vectorizer(self) -> keras_layers.TextVectorization:
+        vectorizer = keras_layers.TextVectorization(
+            vocabulary=["this", "is", "a", "test"],
+            output_sequence_length=20,
+            max_tokens=1000,
+        )
+        return vectorizer
+
+    def test_should_return_keras_model_object(
+        self, fake_vectorizer, mocker: MockerFixture
+    ):
+        # arrange
+
+        # act
+        result = CnnExpenseClassifierModel().create_model(fake_vectorizer)
+
+        # assert
+        assert isinstance(result, tf.keras.Model)
+
+    def test_has_expected_layers(self, fake_vectorizer, mocker: MockerFixture):
+        # arrange
+
+        # act
+        model = CnnExpenseClassifierModel().create_model(fake_vectorizer)
+
+        # assert
+        layers = model.layers
+        assert [type(x) for x in layers] == [
+            keras_layers.InputLayer,
+            keras_layers.TextVectorization,
+            keras_layers.Embedding,
+            #
+            keras_layers.Conv1D,
+            #
+            keras_layers.GlobalAveragePooling1D,
+            #
+            keras_layers.Dense,
+            keras_layers.Dense,
+        ]
