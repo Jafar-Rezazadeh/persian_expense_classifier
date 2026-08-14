@@ -3,7 +3,7 @@ import os
 import json
 import re
 from sklearn.model_selection import train_test_split
-from persian_expense_classifier.data.data_loader import loadData
+from persian_expense_classifier.data.data_loader import load_data
 from persian_expense_classifier.preprocessing.tokenizer_and_padder import (
     CustomTokenizerAndPadded,
 )
@@ -18,7 +18,7 @@ maxLen = 20
 num_words = 1000
 
 # %% loadData
-x, y = loadData()
+x, y = load_data()
 
 xTrain, xTest, yTrain, yTest = train_test_split(
     x, y, test_size=0.2, random_state=42, stratify=y

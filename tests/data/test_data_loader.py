@@ -2,13 +2,13 @@ import json
 from pathlib import Path
 import pytest
 from pytest_mock import MockerFixture, MockType
-from persian_expense_classifier.data.data_loader import loadData
+from persian_expense_classifier.data.data_loader import load_data
 import pandas as pd
 
 
 def test_load_expected_csv_files(mock_read_csv: MockType, fake_df: pd.DataFrame):
     # act
-    loadData()
+    load_data()
 
     # assert
     paths = [call.args[0] for call in mock_read_csv.call_args_list]
@@ -30,7 +30,7 @@ def test_should_convert_int_label_to_string(mocker: MockerFixture):
     )
 
     # act
-    loadData()
+    load_data()
 
     # assert
     assert type(df_fake["label"].iloc[0]) == str
@@ -50,7 +50,7 @@ def test_should_concat_all_loaded_dfs(mocker: MockerFixture):
     )
 
     # act
-    X, y = loadData()
+    X, y = load_data()
 
     # assert
     expected_dfs_text = ["df1", "df2", "df3", "df4", "df5"]
@@ -59,7 +59,7 @@ def test_should_concat_all_loaded_dfs(mocker: MockerFixture):
 
 def test_return_expected_result(mocker: MockerFixture, fake_df: pd.DataFrame):
     # act
-    X, y = loadData()
+    X, y = load_data()
 
     # assert
     assert X[0] == fake_df["text"][0]

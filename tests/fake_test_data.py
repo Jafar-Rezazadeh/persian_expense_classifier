@@ -1,3 +1,5 @@
+import numpy as np
+
 train_config_dic = {
     "text_vectorization": {
         "max_tokens": 7000,
@@ -22,4 +24,13 @@ train_config_dic = {
             "activation": "relu",
         },  # number of classes
     },
+    "train": {
+        "test_size": 0.2,
+        "shuffle": True,
+        "optimizer": "Adam",
+        "loss": "sparse_categorical_crossentropy",
+        "metrics": ["accuracy"],
+    },
 }
+
+load_data = tuple([np.full(50, "hello"), np.full(50, "food")])

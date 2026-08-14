@@ -18,3 +18,10 @@ cnn_model:
   dense2:
     units: 6 #number of classes
     activation: softmax
+
+train:
+  test_size: 0.2
+  shuffle: True
+  optimizer: Adam
+  loss: sparse_categorical_crossentropy
+  metrics: [accuracy]

@@ -7,7 +7,7 @@ from typing import cast
 import random
 
 
-def loadData() -> tuple[np.ndarray, np.ndarray]:
+def load_data() -> tuple[np.ndarray, np.ndarray]:
 
     ROOT = Path(__file__).resolve().parents[3]
 
