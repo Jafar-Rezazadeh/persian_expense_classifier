@@ -66,7 +66,7 @@ class TestTextVectorizationLayer:
         assert vectorizer._standardize == STANDARDIZERS[vectorizer_conf["standardize"]]
 
 
-class TestCreateModel:
+class TestBuildModel:
 
     @pytest.fixture(autouse=True)
     def fake_vectorizer(self) -> keras_layers.TextVectorization:
@@ -83,7 +83,7 @@ class TestCreateModel:
         # arrange
 
         # act
-        result = CnnExpenseClassifierModel().create_model(fake_vectorizer)
+        result = CnnExpenseClassifierModel().build_model(fake_vectorizer)
 
         # assert
         assert isinstance(result, tf.keras.Model)
@@ -92,7 +92,7 @@ class TestCreateModel:
         # arrange
 
         # act
-        model = CnnExpenseClassifierModel().create_model(fake_vectorizer)
+        model = CnnExpenseClassifierModel().build_model(fake_vectorizer)
 
         # assert
         layers = model.layers
@@ -120,7 +120,7 @@ class TestCreateModel:
         )
 
         # act
-        model = CnnExpenseClassifierModel().create_model(fake_vectorizer)
+        model = CnnExpenseClassifierModel().build_model(fake_vectorizer)
 
         # assert
         cnn_conf = fake_config["cnn_model"]

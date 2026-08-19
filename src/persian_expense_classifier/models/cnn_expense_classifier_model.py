@@ -30,7 +30,7 @@ class CnnExpenseClassifierModel:
             standardize=standardizer,  # type: ignore
         )
 
-    def create_model(
+    def build_model(
         self, text_vectorizer: keras_layers.TextVectorization
     ) -> tf.keras.Model:
 

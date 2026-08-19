@@ -8,6 +8,7 @@ import random
 
 
 def load_data() -> tuple[np.ndarray, np.ndarray]:
+    """returns `X` , `y`"""
 
     ROOT = Path(__file__).resolve().parents[3]
 

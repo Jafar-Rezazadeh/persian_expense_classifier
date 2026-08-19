@@ -33,4 +33,4 @@ train_config_dic = {
     },
 }
 
-load_data = tuple([np.full(50, "hello"), np.full(50, "food")])
+load_data = [(["hello how are you"], ["food"]) for _ in range(50)]
