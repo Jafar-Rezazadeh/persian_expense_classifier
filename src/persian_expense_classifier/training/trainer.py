@@ -1,6 +1,4 @@
 import tensorflow as tf
-
-
 from persian_expense_classifier.utils.load_config import load_train_config
 
 
