@@ -76,6 +76,7 @@ class TestTrainMethod:
         mock_fit = cast(MagicMock, mock_model.fit)
         args, kwargs = mock_fit.call_args
         assert kwargs.get("epochs") == epochs
+        assert "callbacks" in kwargs
 
     def test_should_return_history(self, mock_model):
         # arrange

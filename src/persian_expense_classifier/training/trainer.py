@@ -28,6 +28,13 @@ class Trainer:
             y_train,
             validation_data=(x_test, y_test),
             epochs=epochs,
+            callbacks=[
+                tf.keras.callbacks.EarlyStopping(
+                    monitor="val_accuracy",
+                    restore_best_weights=True,
+                    patience=3,
+                )
+            ],
         )
 
         return history
