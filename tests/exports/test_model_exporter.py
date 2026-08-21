@@ -21,12 +21,14 @@ class TestSaveKerasModel:
     def test_should_call_expected_functionality_with_expected_arg(self, fake_model):
         # arrange
         path = Path("test_path")
+        model_name = "test"
 
         # act
-        save_keras_model(fake_model, path)
+        save_keras_model(fake_model, path, model_name)
 
         # assert
-        fake_model.save.assert_called_once_with(path)
+        path_arg = fake_model.save.call_args_list[0].args[0]
+        assert str(path_arg).endswith(str(path / f"{model_name}.keras"))
 
 
 class TestSaveTfLiteModel:
@@ -60,9 +62,10 @@ class TestSaveTfLiteModel:
     ):
         # arrange
         path = Path("test/path")
+        model_name = "test"
 
         # act
-        save_tflite_model(fake_model, path)
+        save_tflite_model(fake_model, path, model_name)
 
         # assert
         fake_converter.convert.assert_called_once()
@@ -70,9 +73,14 @@ class TestSaveTfLiteModel:
     def test_should_open_the_tflite_file(self, fake_model, fake_open):
         # arrange
         path = Path("test")
+        model_name = "test"
 
         # act
-        save_tflite_model(fake_model, path)
+        save_tflite_model(fake_model, path, model_name)
 
         # assert
-        fake_open.assert_called_once_with(path, "wb")
+
+        path_arg = fake_open.call_args_list[0].args[0]
+        mode_arg = fake_open.call_args_list[0].args[1]
+        assert str(path_arg).endswith(str(path / f"{model_name}.tflite"))
+        assert mode_arg == "wb"

@@ -70,5 +70,6 @@ plot_accuracy(history)
 
 # saving the trained model
 path = Path("artifacts/models")
-save_keras_model(model, path)
-save_tflite_model(model, path)
+model_name = "cnn_persian_expense_classifier"
+save_keras_model(model, path, model_name)
+save_tflite_model(model, path, model_name)
