@@ -1,4 +1,8 @@
+# %%
 from pathlib import Path
+from typing import Any, cast
+
+import numpy as np
 
 from persian_expense_classifier.data.data_loader import DataLoader
 from persian_expense_classifier.models.cnn_expense_classifier_model import (
@@ -14,7 +18,6 @@ from sklearn.model_selection import train_test_split
 from persian_expense_classifier.preprocessing.custom_label_encoder import (
     CustomLabelEncoder,
 )
-import numpy as np
 
 dataLoader = DataLoader()
 labelEncoder = CustomLabelEncoder()
@@ -26,14 +29,18 @@ X, y = dataLoader.load_data()
 
 x_train, x_test, y_train, y_test = train_test_split(X, y)
 
+# creating vocabulary using data
+vectorizer.adapt(x_train)
+
 
 # preprocessing the label
+
+x_train = vectorizer(x_train)
+x_test = vectorizer(x_test)
+
 y_train = labelEncoder.fit_transform(y_train)
 y_test = labelEncoder.transform(y_test)
 
-
-# creating vocabulary using data
-vectorizer.adapt(x_train)
 
 model = model.build_model(vectorizer)
 
@@ -46,7 +53,15 @@ history = trainer.train(
     x_test,
     y_train,
     y_test,
+    epochs=1,
 )
+
+# evaluation
+eval_result = model.evaluate(x_test, np.asarray(y_test), return_dict=True)
+eval_result = cast(dict[str, Any], eval_result)
+print("eval_loss:", eval_result["loss"])
+print("eval_accuracy:", eval_result["accuracy"])
+
 
 # visualization
 plot_loss(history)

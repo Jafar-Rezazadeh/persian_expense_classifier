@@ -24,9 +24,7 @@ def mock_load_train_config(mocker: MockerFixture):
 
 class TestTextVectorizationLayer:
 
-    def test_should_return_expected_layer_type(
-        self, mocker: MockerFixture, mock_load_train_config: MagicMock
-    ):
+    def test_should_return_expected_layer_type(self):
         # act
         result = CnnExpenseClassifierModel().vectorizer()
 
@@ -34,7 +32,7 @@ class TestTextVectorizationLayer:
         assert isinstance(result, tf.keras.layers.Layer)
 
     def test_call_expected_module_to_load_config_with_expected_arg(
-        self, mocker: MockerFixture, mock_load_train_config: MagicMock
+        self, mock_load_train_config: MagicMock
     ):
 
         # act
@@ -77,9 +75,7 @@ class TestBuildModel:
         )
         return vectorizer
 
-    def test_should_return_keras_model_object(
-        self, fake_vectorizer, mocker: MockerFixture
-    ):
+    def test_should_return_keras_model_object(self, fake_vectorizer):
         # arrange
 
         # act
@@ -88,7 +84,7 @@ class TestBuildModel:
         # assert
         assert isinstance(result, tf.keras.Model)
 
-    def test_has_expected_layers(self, fake_vectorizer, mocker: MockerFixture):
+    def test_has_expected_layers(self, fake_vectorizer):
         # arrange
 
         # act
@@ -98,7 +94,6 @@ class TestBuildModel:
         layers = model.layers
         assert [type(x) for x in layers] == [
             keras_layers.InputLayer,
-            keras_layers.TextVectorization,
             keras_layers.Embedding,
             #
             keras_layers.Conv1D,
@@ -124,6 +119,13 @@ class TestBuildModel:
 
         # assert
         cnn_conf = fake_config["cnn_model"]
+
+        input_layer = model.layers[0]
+
+        assert input_layer.get_config()["batch_input_shape"] == (
+            None,
+            fake_config["text_vectorization"]["output_sequence_length"],
+        )
 
         embedding = next(
             x for x in model.layers if isinstance(x, keras_layers.Embedding)
