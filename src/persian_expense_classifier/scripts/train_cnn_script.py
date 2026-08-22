@@ -1,4 +1,3 @@
-# %%
 from pathlib import Path
 from typing import Any, cast
 
@@ -17,6 +16,9 @@ from persian_expense_classifier.exports.model_exporter import (
 from sklearn.model_selection import train_test_split
 from persian_expense_classifier.preprocessing.custom_label_encoder import (
     CustomLabelEncoder,
+)
+from persian_expense_classifier.exports.vectorization_exporter import (
+    export_text_vectorization,
 )
 
 dataLoader = DataLoader()
@@ -53,6 +55,7 @@ history = trainer.train(
     x_test,
     y_train,
     y_test,
+    # TODO: change the epoch on real training
     epochs=1,
 )
 
@@ -69,7 +72,14 @@ plot_accuracy(history)
 
 
 # saving the trained model
-path = Path("artifacts/models")
+
+save_root_path = Path("artifacts/models/cnn")
 model_name = "cnn_persian_expense_classifier"
-save_keras_model(model, path, model_name)
-save_tflite_model(model, path, model_name)
+
+save_keras_model(model, save_root_path, model_name)
+save_tflite_model(model, save_root_path, model_name)
+
+
+# saving the vectorizer
+
+export_text_vectorization(vectorizer, save_root_path)
