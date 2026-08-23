@@ -1,3 +1,4 @@
+# %%
 from pathlib import Path
 from typing import Any, cast
 
@@ -20,6 +21,8 @@ from persian_expense_classifier.preprocessing.custom_label_encoder import (
 from persian_expense_classifier.exports.vectorization_exporter import (
     export_text_vectorization,
 )
+
+# %%
 
 dataLoader = DataLoader()
 labelEncoder = CustomLabelEncoder()
@@ -48,6 +51,7 @@ model = model.build_model(vectorizer)
 
 trainer = Trainer(model)
 
+# %%
 
 # training
 history = trainer.train(
@@ -55,8 +59,6 @@ history = trainer.train(
     x_test,
     y_train,
     y_test,
-    # TODO: change the epoch on real training
-    epochs=1,
 )
 
 # evaluation
@@ -81,5 +83,17 @@ save_tflite_model(model, save_root_path, model_name)
 
 
 # saving the vectorizer
-
 export_text_vectorization(vectorizer, save_root_path)
+
+# %% real world example
+text = input("enter a persian text: ")
+
+# INFO: the [] on vectorizer([text]) is important because the embedding needs (1,max_length) shape the first dim is batch_size
+text_vectorized = vectorizer([text])
+
+
+output: np.ndarray = model.predict(text_vectorized)
+output_label_int = output.argmax()
+
+result = labelEncoder.inverse_transform([output_label_int])
+print(result[0])
