@@ -11,3 +11,7 @@ dependencies:
   - tensorflow
   - keras
   - matplotlib
+  - pytest
+  - pytest-mock
+  - pyyaml
+  - colorama

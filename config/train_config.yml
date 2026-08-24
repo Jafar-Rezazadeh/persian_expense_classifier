@@ -1,0 +1,28 @@
+text_vectorization:
+  max_tokens: 10000
+  output_sequence_length: 20
+  output_mode: int
+  standardize: expense_standardize
+
+cnn_model:
+  embedding:
+    output_dim: 128
+  conv1D:
+    filters: 64
+    kernel_size: 4
+    padding: same
+    activation: relu
+  dense1:
+    units: 64
+    activation: relu
+  dense2:
+    units: 7 #number of classes
+    activation: softmax
+
+train:
+  test_size: 0.2
+  shuffle: True
+  optimizer: Adam
+  loss: sparse_categorical_crossentropy
+  metrics:
+    - accuracy

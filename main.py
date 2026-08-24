@@ -3,20 +3,22 @@ import os
 import json
 import re
 from sklearn.model_selection import train_test_split
-from persian_expense_classifier.data.data_loader import loadData
+from persian_expense_classifier.data.data_loader import load_data
 from persian_expense_classifier.preprocessing.tokenizer_and_padder import (
     CustomTokenizerAndPadded,
 )
 from persian_expense_classifier.preprocessing.custom_label_encoder import (
     CustomLabelEncoder,
 )
-from persian_expense_classifier.models.custom_model import ExpanseClassifier
+from persian_expense_classifier.models.simple_expense_classifier_model import (
+    SimpleExpanseClassifierModel,
+)
 
 maxLen = 20
 num_words = 1000
 
 # %% loadData
-x, y = loadData()
+x, y = load_data()
 
 xTrain, xTest, yTrain, yTest = train_test_split(
     x, y, test_size=0.2, random_state=42, stratify=y
@@ -71,7 +73,9 @@ yTestEnc = customLabelEncoder.transform(yTest)
 
 num_classes = len(customLabelEncoder.classes_)
 
-model = ExpanseClassifier(num_words=num_words, maxLen=maxLen, num_classes=num_classes)
+model = SimpleExpanseClassifierModel(
+    num_words=num_words, maxLen=maxLen, num_classes=num_classes
+)
 
 model.fit(
     xTrainPad,
